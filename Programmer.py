@@ -728,10 +728,217 @@ for match in found:
 # 第18章
 # import sys
 # print(sys.path)
-from flask import Flask
-app = Flask(__name__)
-@app.route('/')
-def index():
-    return "Hello, World!"
-app.run(port=8000)
+# from flask import Flask
+# app = Flask(__name__)
+# @app.route('/')
+# def index():
+#     return "Hello, World!"
+# app.run(port=8000)
 
+# 第20章
+# スクレイピング
+import urllib.request
+from bs4 import BeautifulSoup
+
+class Scraper:
+    def __init__(self, site):
+        self.site = site
+
+    def scrape(self):
+        r = urllib.request.urlopen(self.site)
+        html = r.read()
+        paser = "html.parser"
+        sp = BeautifulSoup(html, paser)
+        for tag in sp.find_all("a"):
+            url = tag.get("href")
+            if url is None:
+                continue
+            if "html" in url:
+                print("\n" + url)
+
+news = "https://news.yahoo.co.jp/"
+Scraper(news).scrape()
+
+
+# 第21章
+# スタック（LIFO）の操作
+class Stack:
+    def __init__(self):
+        self.items = []
+
+    def is_empty(self):
+        # return self.items == []
+        return not self.items == []
+
+    def push(self, item):
+        self.items.append(item)
+
+    def pop(self):
+        return self.items.pop()
+
+    def peek(self):
+        # last = len(self.items) - 1
+        return self.items[-1]
+
+    def size(self):
+        return len(self.items)
+
+
+stack = Stack()
+stack.push(1)
+item = stack.pop()
+print(item)
+print(stack.is_empty())
+for i in range(0,6):
+    stack.push(i)
+print(stack.peek())
+print(stack.size())
+# 文字列の反転
+stack = Stack()
+for c in "Hello":
+    stack.push(c)
+print(stack.items)
+revers = ""
+while stack.size():
+    revers += stack.pop()
+print(revers)
+
+# キュー（FIFO）
+# import collections
+# collections.dequeがpythonの組み込みクラス。詳しくは下。
+# https://docs.python.org/ja/3/library/collections.html#collections.deque
+
+
+class Queue:
+    def __init__(self):
+        self.items = []
+
+    def is_empty(self):
+        return self.items == []
+
+    def enqueue(self, item):
+        self.items.insert(0, item)
+
+    def dequeue(self):
+        return self.items.pop()
+
+    def size(self):
+        return len(self.items)
+
+
+a_queue = Queue()
+print(a_queue.is_empty())
+a_queue = Queue()
+for i in range(0, 100):
+    a_queue.enqueue(i)
+while a_queue.size():
+    print(a_queue.dequeue())
+print(a_queue.size())
+
+# チケット行列
+import random
+import time
+
+
+def simulate_line(till_show, max_time):
+    pq = Queue()
+    tix_sold = []
+
+    for i in range(100):
+        pq.enqueue("person" + str(i))
+
+    t_end = time.time() + till_show
+    now = time.time()
+    while now < t_end and not pq.is_empty():
+        now = time.time()
+        r = random.randint(0, max_time)
+        time.sleep(r)
+        person = pq.dequeue()
+        print(person)
+        tix_sold.append(person)
+    return tix_sold
+
+
+# sold = simulate_line(5, 1)
+# print(sold)
+
+# 第22章
+# FizzBuzz（1-100, 3の倍数 = Fizz, 5の倍数 = Buzz, 3と5の倍数 = FizzBuzz)
+nums = []
+for i in range(1, 101):
+    if i % 3 == 0 and i % 5 ==0:
+        nums.append("FizzBuzz")
+    elif i % 3 == 0:
+        nums.append("Fizz")
+    elif i % 5 == 0:
+        nums.append("Buzz")
+    else:
+        nums.append(i)
+print(nums)
+
+
+# 線形探索
+def ss(number_list, n):
+    found = False
+    for i in number_list:
+        if i == n:
+            found = True
+            break
+    return found
+
+
+numbers = range(0, 100)
+s1 = ss(numbers, 2)
+print(s1)
+s2 = ss(numbers, 202)
+print(s2)
+
+
+# 回文
+def palindrome(word):
+    word = word.lower()
+    return word[::-1] == word
+
+
+print(palindrome("Mother"))
+print(palindrome("Mom"))
+
+
+# アナグラム
+def anagram(w1, w2):
+    w1 = w1.lower()
+    w2 = w2.lower()
+    return sorted(w1) == sorted(w2)
+
+
+print(anagram("iceman", "cinema"))
+print(anagram("leaf", "tree"))
+
+
+# 出現文字列のカウント（3パターン）
+def count_characters(strings):
+    count_dict = {}
+    for c in strings:
+        if c in count_dict:
+            count_dict[c] += 1
+        else:
+            count_dict[c] = 1
+    print(count_dict)
+
+
+count_characters("Dynasty")
+
+from collections import defaultdict
+
+
+def count_characters2(string2):
+    count_dict = defaultdict(int)
+    for c in string2:
+        count_dict[c] += 1
+    print(count_dict)
+
+
+count_characters2("Dynasty")
+
+from collections import Counter
+print(Counter("Dynasty"))
